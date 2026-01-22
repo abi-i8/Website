@@ -4,7 +4,7 @@ export const gestureData = {
     isActive: false,
     x: 0, // -1 (left) to 1 (right)
     y: 0, // -1 (up) to 1 (down) 
-    zoom: 0, // -1 (far) to 1 (close)
+    zoom: 0, // -1 (far) to 1 (close)7
     isHandDetected: false
 };
 
