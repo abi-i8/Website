@@ -13,9 +13,9 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-// Camera Position
-camera.position.set(30, 20, 50);
-camera.lookAt(0, 0, 0);
+// Camera Position (Top View)
+camera.position.set(0, 120, 0); // High up on Y axis
+camera.lookAt(0, 0, 0); // Look down at Sun
 
 // 2. Lighting (High Intensity for visibility)8
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -302,20 +302,25 @@ const asteroids = createAsteroidBelt();
 
 // 7. Animation State
 let cameraIntroDone = false;
-let startZoom = 200;
 
 function animate() {
   requestAnimationFrame(animate);
 
-  // Intro Fly-In
+  // Intro Fly-In (Descend from space)
+  let startHeight = 400; // Starting Y height
+
   if (!cameraIntroDone) {
-    if (startZoom > 50) {
-      startZoom -= 1.5; // Fly-in speed
-      camera.position.z = startZoom;
+    if (camera.position.y > 120) {
+      camera.position.y -= 2.0; // Fly-down speed
+      // Keep looking at center while moving
+      camera.lookAt(0, 0, 0);
     } else {
       cameraIntroDone = true;
-      camera.position.z = 50;
+      camera.position.y = 120;
     }
+  } else {
+    // Ensure lookAt remains valid after manual moves
+    camera.lookAt(0, 0, 0);
   }
 
   // Rotate Sun
@@ -356,19 +361,23 @@ function animate() {
   if (gestureData.isActive && gestureData.isHandDetected) {
     cameraIntroDone = true; // Cancel intro if user interferes
 
-    // Rotation (X movements rotate scene Y)
+    // Rotation (X movements rotate scene Y - standard spin)
     // Smooth interpolation
     scene.rotation.y += (gestureData.x - scene.rotation.y) * 0.05;
-    scene.rotation.x += (gestureData.y * 0.5 - scene.rotation.x) * 0.05; // Allow some vertical tilt with hand
 
-    // Zoom (Z movements move camera)
-    // Base Z is 50. Zoom range: 30 (Close) to 70 (Far)
-    const targetZoom = 50 - (gestureData.zoom * 20);
-    camera.position.z += (targetZoom - camera.position.z) * 0.05;
+    // Zoom (Z gesture mapped to Camera Height Y for top view)
+    // Base Height is 120. Zoom range: 80 (Close) to 200 (Far)
+    const targetHeight = 120 - (gestureData.zoom * 50);
+    camera.position.y += (targetHeight - camera.position.y) * 0.05;
+
+    // Maintain top-down focus
+    camera.lookAt(0, 0, 0);
+
   } else {
-    // Reset Camera if not controlled
-    if (cameraIntroDone && Math.abs(camera.position.z - 50) > 0.1) {
-      camera.position.z += (50 - camera.position.z) * 0.02;
+    // Reset Camera if not controlled (Height return to 120)
+    if (cameraIntroDone && Math.abs(camera.position.y - 120) > 0.1) {
+      camera.position.y += (120 - camera.position.y) * 0.02;
+      camera.lookAt(0, 0, 0);
     }
   }
 

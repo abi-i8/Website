@@ -66,30 +66,5 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 4. Glitch Effect on Title (Run once on load)
-    const title = document.querySelector('.glitch-text');
-    if (title) {
-        // Run after initial fade in (approx 1.5s delay)
-        setTimeout(() => {
-            const original = title.dataset.text;
-            const strangeChars = '!@#$%^&*()_+-=[]{}|;:,.<>?';
 
-            // Randomly scramble text for 0.5s
-            let iterations = 0;
-            const interval = setInterval(() => {
-                title.innerText = original
-                    .split("")
-                    .map((letter, index) => {
-                        if (index < iterations) {
-                            return original[index];
-                        }
-                        return strangeChars[Math.floor(Math.random() * 26)];
-                    })
-                    .join("");
-
-                if (iterations >= original.length) clearInterval(interval);
-                iterations += 1 / 3; // Speed
-            }, 30);
-        }, 1500);
-    }
 });

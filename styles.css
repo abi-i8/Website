@@ -202,13 +202,17 @@ header {
 }
 
 .project-card {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--glass-border);
   padding: 2.5rem;
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   position: relative;
   overflow: hidden;
   cursor: pointer;
+  border-radius: 2px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
 }
 
 .project-card:hover {
