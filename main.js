@@ -17,7 +17,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 camera.position.set(30, 20, 50);
 camera.lookAt(0, 0, 0);
 
-// 2. Lighting (High Intensity for visibility)
+// 2. Lighting (High Intensity for visibility)8
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
