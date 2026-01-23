@@ -3,7 +3,7 @@ import * as THREE from 'three';
 // 1. Scene Setup
 const scene = new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
 const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector('#bg'),
   antialias: true,
@@ -13,11 +13,11 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-// Camera Position (Top View)
-camera.position.set(0, 120, 0); // High up on Y axis
-camera.lookAt(0, 0, 0); // Look down at Sun
+// Camera Position (Slanted Top View)
+camera.position.set(0, 110, 40); // Slanted perspective
+camera.lookAt(0, 0, 0);
 
-// 2. Lighting (High Intensity for visibility)8
+// 2. Lighting (High Intensity for visibility)
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
@@ -310,13 +310,13 @@ function animate() {
   let startHeight = 400; // Starting Y height
 
   if (!cameraIntroDone) {
-    if (camera.position.y > 120) {
+    if (camera.position.y > 110) {
       camera.position.y -= 2.0; // Fly-down speed
       // Keep looking at center while moving
       camera.lookAt(0, 0, 0);
     } else {
       cameraIntroDone = true;
-      camera.position.y = 120;
+      camera.position.y = 110;
     }
   } else {
     // Ensure lookAt remains valid after manual moves
@@ -396,6 +396,7 @@ document.addEventListener('mousemove', (e) => {
     mouseX = (e.clientX / window.innerWidth) - 0.5;
     mouseY = (e.clientY / window.innerHeight) - 0.5;
     scene.rotation.y = mouseX * 0.1;
+    scene.rotation.x = mouseY * 0.1; // Add vertical tilt using all movements
   }
 });
 
