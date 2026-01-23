@@ -87,27 +87,7 @@ function createPlanet(size, baseColor, type, orbitRadius, speed) {
   orbit.add(planet);
   planet.position.x = orbitRadius;
 
-  // Create Orbit Ring (LineLoop for clearer visibility)
-  const curve = new THREE.EllipseCurve(
-    0, 0,            // ax, aY
-    orbitRadius, orbitRadius,           // xRadius, yRadius
-    0, 2 * Math.PI,  // aStartAngle, aEndAngle
-    false,            // aClockwise
-    0                 // aRotation
-  );
 
-  const points = curve.getPoints(128);
-  const orbitGeometry = new THREE.BufferGeometry().setFromPoints(points);
-
-  const orbitMaterial = new THREE.LineBasicMaterial({
-    color: 0xffffff,
-    transparent: true,
-    opacity: 0.15
-  });
-
-  const orbitRing = new THREE.LineLoop(orbitGeometry, orbitMaterial);
-  orbitRing.rotation.x = -Math.PI / 2; // Lie flat
-  scene.add(orbitRing);
 
   scene.add(orbit);
   return { mesh: planet, orbit: orbit, speed: speed };
@@ -161,17 +141,17 @@ scene.add(glowSprite);
 
 // PLANETS
 // Much slower, realistic relative speeds
-const mercury = createPlanet(1.2, '#A5A5A5', 'rock', 14, 0.008);
-const venus = createPlanet(1.8, '#E3BB76', 'rock', 20, 0.006);
-const earth = createPlanet(2.0, '#2233FF', 'rock', 28, 0.005); // Base reference
-const mars = createPlanet(1.5, '#FF4500', 'rock', 36, 0.004);
-const jupiter = createPlanet(5.5, '#D8CA9D', 'gas', 60, 0.002);
+const mercury = createPlanet(1.2, '#E0E0E0', 'rock', 14, 0.008); // Bright Silver
+const venus = createPlanet(1.8, '#FFC200', 'rock', 20, 0.006);   // Vivid Amber
+const earth = createPlanet(2.0, '#0066FF', 'rock', 28, 0.005);   // Electric Blue
+const mars = createPlanet(1.5, '#FF2200', 'rock', 36, 0.004);    // Neon Red
+const jupiter = createPlanet(5.5, '#FF8800', 'gas', 60, 0.002);  // Bright Orange
 const saturnOrbRadius = 80;
 
 // Saturn Custom (with Rings)
 const saturnGeo = new THREE.SphereGeometry(4.5, 32, 32);
 const saturnMat = new THREE.MeshStandardMaterial({
-  map: createProceduralTexture('#C5A165', 'gas')
+  map: createProceduralTexture('#FFD900', 'gas') // Bright Gold
 });
 const saturnMesh = new THREE.Mesh(saturnGeo, saturnMat);
 const saturnOrbit = new THREE.Object3D();
@@ -181,25 +161,18 @@ scene.add(saturnOrbit);
 
 // Saturn Rings (Planet Rings)
 const satRingGeo = new THREE.TorusGeometry(6.5, 1, 2, 64);
-const satRingMat = new THREE.MeshStandardMaterial({ color: 0xaa8866, side: THREE.DoubleSide });
+const satRingMat = new THREE.MeshStandardMaterial({ color: 0xFFB84D, side: THREE.DoubleSide });
 const satRing = new THREE.Mesh(satRingGeo, satRingMat);
 satRing.rotation.x = Math.PI / 1.8;
 saturnMesh.add(satRing);
 
 // Saturn Orbit Track (Visual Line)
-// Saturn Orbit Track (Visual Line)
-const satCurve = new THREE.EllipseCurve(0, 0, saturnOrbRadius, saturnOrbRadius, 0, 2 * Math.PI, false, 0);
-const satPoints = satCurve.getPoints(128);
-const satTrackGeo = new THREE.BufferGeometry().setFromPoints(satPoints);
-const satTrackMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.15 });
-const satTrack = new THREE.LineLoop(satTrackGeo, satTrackMat);
-satTrack.rotation.x = -Math.PI / 2;
-scene.add(satTrack);
+
 
 const saturn = { mesh: saturnMesh, orbit: saturnOrbit, speed: 0.0015 };
 
-const uranus = createPlanet(3.0, '#99CCFF', 'gas', 95, 0.001);
-const neptune = createPlanet(2.9, '#3333FF', 'gas', 110, 0.0008);
+const uranus = createPlanet(3.0, '#00FFFF', 'gas', 95, 0.001);   // Cyan
+const neptune = createPlanet(2.9, '#3000FF', 'gas', 110, 0.0008); // Indigo
 
 // MOON
 const moonGeo = new THREE.SphereGeometry(0.5, 32, 32);
