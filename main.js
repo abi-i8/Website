@@ -3,7 +3,7 @@ import * as THREE from 'three';
 // 1. Scene Setup
 const scene = new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector('#bg'),
   antialias: true,
@@ -87,15 +87,25 @@ function createPlanet(size, baseColor, type, orbitRadius, speed) {
   orbit.add(planet);
   planet.position.x = orbitRadius;
 
-  // Create Orbit Ring
-  const ringGeo = new THREE.RingGeometry(orbitRadius - 0.1, orbitRadius + 0.1, 128);
-  const ringMat = new THREE.MeshBasicMaterial({
+  // Create Orbit Ring (LineLoop for clearer visibility)
+  const curve = new THREE.EllipseCurve(
+    0, 0,            // ax, aY
+    orbitRadius, orbitRadius,           // xRadius, yRadius
+    0, 2 * Math.PI,  // aStartAngle, aEndAngle
+    false,            // aClockwise
+    0                 // aRotation
+  );
+
+  const points = curve.getPoints(128);
+  const orbitGeometry = new THREE.BufferGeometry().setFromPoints(points);
+
+  const orbitMaterial = new THREE.LineBasicMaterial({
     color: 0xffffff,
-    side: THREE.DoubleSide,
     transparent: true,
-    opacity: 0.1
+    opacity: 0.15
   });
-  const orbitRing = new THREE.Mesh(ringGeo, ringMat);
+
+  const orbitRing = new THREE.LineLoop(orbitGeometry, orbitMaterial);
   orbitRing.rotation.x = -Math.PI / 2; // Lie flat
   scene.add(orbitRing);
 
@@ -177,9 +187,12 @@ satRing.rotation.x = Math.PI / 1.8;
 saturnMesh.add(satRing);
 
 // Saturn Orbit Track (Visual Line)
-const satTrackGeo = new THREE.RingGeometry(saturnOrbRadius - 0.1, saturnOrbRadius + 0.1, 128);
-const satTrackMat = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide, transparent: true, opacity: 0.1 });
-const satTrack = new THREE.Mesh(satTrackGeo, satTrackMat);
+// Saturn Orbit Track (Visual Line)
+const satCurve = new THREE.EllipseCurve(0, 0, saturnOrbRadius, saturnOrbRadius, 0, 2 * Math.PI, false, 0);
+const satPoints = satCurve.getPoints(128);
+const satTrackGeo = new THREE.BufferGeometry().setFromPoints(satPoints);
+const satTrackMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.15 });
+const satTrack = new THREE.LineLoop(satTrackGeo, satTrackMat);
 satTrack.rotation.x = -Math.PI / 2;
 scene.add(satTrack);
 
